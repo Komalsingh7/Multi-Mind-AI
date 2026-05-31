@@ -6,7 +6,7 @@ from agents import AgentManager
 from utils.logger import logger
 import os
 from dotenv import load_dotenv
-
+import fitz
 # Load environment variables from .env if present
 load_dotenv()
 
@@ -68,6 +68,66 @@ def apply_theme(theme):
         """,
         unsafe_allow_html=True,
     )
+def pdf_research_section(agent_manager):
+
+    st.header("📄 PDF Research Assistant")
+
+    uploaded_file = st.file_uploader(
+        "Upload Research Paper",
+        type=["pdf"]
+    )
+
+    if uploaded_file:
+
+        text = extract_pdf_text(uploaded_file)
+
+        st.success("PDF uploaded successfully")
+
+        with st.expander("Preview Extracted Text"):
+            st.write(text[:3000])
+
+        if st.button("Generate Summary"):
+
+            summarizer = agent_manager.get_agent(
+                "summarize"
+            )
+
+            summary = summarizer.execute(text)
+
+            st.subheader("Summary")
+
+            st.write(summary)
+
+        question = st.text_input(
+            "Ask a question about this PDF"
+        )
+
+        if st.button("Ask PDF"):
+
+            prompt = f"""
+            Based on the following document:
+
+            {text[:15000]}
+
+            Answer:
+
+            {question}
+            """
+
+            qa_agent = agent_manager.get_agent(
+                "write_article"
+            )
+
+            answer = qa_agent.call_llm([
+                {
+                    "role":"user",
+                    "content":prompt
+                }
+            ])
+
+            st.subheader("Answer")
+
+            st.write(answer)
 
 
 def render_dashboard():
@@ -97,6 +157,7 @@ def render_dashboard():
         st.metric("Status", "🟢 Online")
 
     st.markdown("---")
+
 def main():
 
     st.set_page_config(
@@ -119,34 +180,17 @@ def main():
 
     st.sidebar.title("⚙️ Settings")
 
-    st.sidebar.success(
-        "Gemini Connected"
-    )
-
-    st.sidebar.markdown("""
-    ### Features
-
-    ✅ Medical Summarization
-
-    ✅ Research Writer
-
-    ✅ PHI Sanitization
-
-    ✅ Multi-Agent Validation
-
-    ✅ Gemini Powered
-    """)
-
     agent_manager = AgentManager(
         max_retries=2,
         verbose=True
     )
 
-    tab1, tab2, tab3 = st.tabs(
+    tab1, tab2, tab3, tab4 = st.tabs(
         [
             "📄 Summarization",
             "✍️ Research Writer",
-            "🔒 PHI Sanitizer"
+            "🔒 PHI Sanitizer",
+            "📚 PDF Research Assistant"
         ]
     )
 
@@ -158,6 +202,9 @@ def main():
 
     with tab3:
         sanitize_data_section(agent_manager)
+
+    with tab4:
+        pdf_research_section(agent_manager)
 
 def summarize_section(agent_manager):
     st.header("Summarize Medical Text")
@@ -187,6 +234,20 @@ def summarize_section(agent_manager):
         else:
             st.warning("Please enter some text to summarize.")
 
+def extract_pdf_text(pdf_file):
+    text = ""
+
+    pdf_bytes = pdf_file.read()
+
+    doc = fitz.open(
+        stream=pdf_bytes,
+        filetype="pdf"
+    )
+
+    for page in doc:
+        text += page.get_text()
+
+    return text
 def write_and_refine_article_section(agent_manager):
     st.header("Write and Refine Research Article")
     topic = st.text_input("Enter the topic for the research article:")
@@ -226,6 +287,7 @@ def write_and_refine_article_section(agent_manager):
                     logger.error(f"ValidatorAgent Error: {e}")
         else:
             st.warning("Please enter a topic for the research article.")
+
 
 def sanitize_data_section(agent_manager):
     st.header("Sanitize Medical Data (PHI)")
