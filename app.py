@@ -10,13 +10,13 @@ import fitz
 # Load environment variables from .env if present
 load_dotenv()
 
-
 def apply_theme(theme):
     if theme == "Dark":
         bg = "#0F172A"
         text = "#F8FAFC"
         card = "#1E293B"
         border = "#334155"
+
     else:
         bg = "#F8FAFC"
         text = "#0F172A"
@@ -27,41 +27,125 @@ def apply_theme(theme):
         f"""
         <style>
 
+        /* =========================
+           GLOBAL APP BACKGROUND
+        ========================= */
+
         .stApp {{
-            background-color: {bg};
-            color: {text};
+            background-color: {bg} !important;
+            color: {text} !important;
         }}
+
+        html, body {{
+            background-color: {bg} !important;
+            color: {text} !important;
+        }}
+
+        /* FORCE ALL TEXT VISIBILITY */
+        * {{
+            color: {text} !important;
+        }}
+
+        /* =========================
+           HERO SECTION
+        ========================= */
 
         .hero {{
             background: linear-gradient(135deg,#4F46E5,#7C3AED);
             padding: 2.5rem;
             border-radius: 24px;
-            text-align:center;
-            color:white;
-            margin-bottom:20px;
+            text-align: center;
+            color: white !important;
+            margin-bottom: 20px;
         }}
+
+        .hero * {{
+            color: white !important;
+        }}
+
+        /* =========================
+           CARDS
+        ========================= */
 
         .glass {{
-            background:{card};
-            border:1px solid {border};
-            border-radius:20px;
-            padding:20px;
-            box-shadow:0 8px 30px rgba(0,0,0,0.15);
-        }}
-
-        .stButton > button {{
-            width:100%;
-            height:50px;
-            border-radius:12px;
-            font-weight:700;
+            background: {card} !important;
+            border: 1px solid {border} !important;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            color: {text} !important;
         }}
 
         .metric-card {{
-            background:{card};
-            border:1px solid {border};
-            border-radius:16px;
-            padding:15px;
-            text-align:center;
+            background: {card} !important;
+            border: 1px solid {border} !important;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            color: {text} !important;
+        }}
+
+        /* =========================
+           SIDEBAR FIX
+        ========================= */
+
+        section[data-testid="stSidebar"] {{
+            background-color: {card} !important;
+        }}
+
+        section[data-testid="stSidebar"] * {{
+            color: {text} !important;
+        }}
+
+        /* =========================
+           INPUT FIELDS FIX
+        ========================= */
+
+        input, textarea {{
+            background-color: {card} !important;
+            color: {text} !important;
+            border: 1px solid {border} !important;
+        }}
+
+        /* =========================
+           BUTTON FIX
+        ========================= */
+
+        .stButton > button {{
+            width: 100%;
+            height: 50px;
+            border-radius: 12px;
+            font-weight: 700;
+            background-color: {card} !important;
+            color: {text} !important;
+            border: 1px solid {border} !important;
+        }}
+
+        /* =========================
+           TABS FIX (IMPORTANT FOR YOU)
+        ========================= */
+
+        button[data-baseweb="tab"] {{
+            color: {text} !important;
+        }}
+
+        /* selected tab indicator */
+        div[data-baseweb="tab-highlight"] {{
+            background-color: #4F46E5 !important;
+        }}
+
+        /* =========================
+           STREAMLIT COMPONENT FIX
+        ========================= */
+
+        div[data-testid="stMetric"] {{
+            background-color: {card} !important;
+            color: {text} !important;
+        }}
+
+        div[data-testid="stExpander"] {{
+            background-color: {card} !important;
+            color: {text} !important;
         }}
 
         </style>
