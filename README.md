@@ -4,6 +4,11 @@
 
 The application provides an interactive **Streamlit** interface where users can select an AI task, provide input, and receive intelligent results generated through specialized agents.
 
+## 🚀 Live Demo
+
+🔗 **Try the application here:**  
+https://multi-mind-ai--komalsingh74200.replit.app/
+
 ---
 
 ## 🚀 Features
