@@ -7,7 +7,7 @@ The application provides an interactive **Streamlit** interface where users can 
 ## 🚀 Live Demo
 
 🔗 **Try the application here:**  
-https://multi-mind-ai--komalsingh74200.replit.app/
+https://multi-mind-ai--komalsingh74200.replit.app
 
 ---
 
